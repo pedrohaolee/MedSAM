@@ -1,87 +1,89 @@
 # MedSAM for Underwater Sonar Image Segmentation
 
-## Project Overview
+This repository adapts the **MedSAM (Medical Segment Anything Model)** to the domain of underwater sonar imaging, specifically targeting fish segmentation using the Caltech Fish Counting (CFC) dataset.
 
-This project adapts the **Medical Segment Anything Model (MedSAM)**—originally designed for medical image segmentation—to the domain of underwater sonar imaging. By leveraging the structural similarities between ultrasound and sonar imaging, such as low signal-to-noise ratios, diffuse boundaries, and complex textures, this project aims to effectively segment sonar images, specifically for fish tracking and ecological monitoring tasks.
+## Overview
+MedSAM, originally developed for medical image segmentation, is applied here to underwater sonar imagery, leveraging its capabilities in handling challenging imaging conditions such as high noise, diffuse boundaries, and complex textures typical of both ultrasound and sonar data.
 
-### Objectives
-- Adapt and fine-tune MedSAM for sonar image segmentation tasks.
-- Evaluate segmentation performance using the Caltech Fish Counting Dataset (CFC).
-- Provide quantitative and qualitative analyses comparing MedSAM to baseline models.
+## Installation
 
-## MedSAM Background
+1. Create and activate a conda environment:
+   ```bash
+   conda create -n medsam python=3.10 -y
+   conda activate medsam
+   ```
 
-MedSAM is a deep learning segmentation model, trained on a large-scale dataset of 1.6 million medical image-mask pairs across various medical imaging modalities. The model has demonstrated exceptional performance in medical contexts, notably with challenging ultrasound imaging data.
+2. Install PyTorch:
+   ```bash
+   pip install torch torchvision torchaudio
+   ```
 
-Key components include:
-- **Image Encoder:** Extracts features from the input images.
-- **Prompt Encoder:** Integrates interactive or automated prompts to guide segmentation.
-- **Mask Decoder:** Produces precise segmentation masks from encoded features.
+3. Clone this repository:
+   ```bash
+   git clone https://github.com/bowang-lab/MedSAM
+   cd MedSAM
+   pip install -e .
+   ```
 
-## Dataset
+## Data Preparation
 
-The Caltech Fish Counting Dataset (CFC) was utilized for this project. This dataset includes over 1,500 sonar video clips sourced from five diverse environmental locations:
-- Kenai River, Alaska (KL, KR, KC)
-- Nushagak River, Alaska (NU)
-- Elwha River, Washington (EL)
+This project uses the Caltech Fish Counting Dataset (CFC), which contains sonar video clips annotated for fish detection and tracking. Specifically, data from the Kenai River (KL subset) was used for training and validation, with testing on different subsets (KR, KC, NU, EL) to evaluate model generalization across diverse sonar environments.
 
-The data presents multiple challenges such as:
-- Low signal-to-noise ratios.
-- Visually indistinct targets.
-- Complex and variable backgrounds.
+- Dataset details: [Caltech Fish Counting Dataset](https://github.com/visipedia/caltech-fish-counting)
 
-Dataset annotations include over half a million bounding boxes, covering thousands of fish across numerous video frames, enabling detailed performance assessments.
+## Usage
 
-## Implementation
+### Model Inference
 
-### Setup and Installation
+Use the provided script to run segmentation on your sonar images:
 
-To replicate the environment:
 ```bash
-conda create -n medsam python=3.10 -y
-conda activate medsam
-
-# Install PyTorch
-pip install torch torchvision torchaudio
-
-# Clone MedSAM repository
-git clone https://github.com/bowang-lab/MedSAM
-cd MedSAM
-pip install -e .
+python MedSAM_Inference.py -i input_image.png -o output_path --box x1 y1 x2 y2
 ```
 
-Download and place the pretrained MedSAM model checkpoint in `work_dir/MedSAM/medsam_vit_b`.
+### Interactive Notebooks
 
-### Adapting MedSAM
-- Sonar images were preprocessed using normalization and augmentation techniques suitable for underwater imagery.
-- The MedSAM model was fine-tuned specifically for sonar-based segmentation tasks using data from the KL subset for training and validation.
+A Colab notebook tutorial demonstrating the full pipeline for sonar image segmentation using MedSAM is provided:
 
-## Evaluation Metrics
-Performance was evaluated using:
-- **Dice Similarity Coefficient (DSC)**: Measures segmentation accuracy.
-- **Mean Absolute Error (MAE)**: Assesses precision in segmentation.
-- Tracking-specific metrics such as MOTA (Multiple Object Tracking Accuracy) and HOTA (Higher-Order Tracking Accuracy).
+- [Run on Google Colab](https://colab.research.google.com)
+
+### GUI Application
+
+Run the GUI tool for interactive segmentation:
+
+```bash
+pip install PyQt5
+python gui.py
+```
+
+Load sonar images and draw bounding boxes to segment targets.
 
 ## Results
 
-### Quantitative Analysis
-MedSAM demonstrated strong segmentation performance, outperforming traditional baseline methods in handling noisy and diffuse sonar imagery.
+MedSAM shows promising segmentation results in sonar imagery, surpassing baseline methods in both qualitative and quantitative assessments.
 
-### Qualitative Analysis
-Visual comparisons highlighted MedSAM’s robustness in segmenting fish accurately, despite challenging environmental conditions.
+## Future Work
 
-## Key Findings
-- MedSAM effectively leverages structural similarities between medical ultrasound and sonar images, demonstrating significant adaptability and robustness.
-- Superior handling of low signal-to-noise ratios and diffuse boundaries compared to baseline methods.
+- Enhance model robustness and generalization across varied underwater environments.
+- Investigate real-time performance optimization.
 
-## Challenges
-- Performance varied with image quality and complexity, particularly with small or stationary fish against highly noisy backgrounds.
-- High noise levels in some dataset subsets impacted segmentation accuracy.
+## Acknowledgments
 
-## Future Directions
-- Further optimization for real-time segmentation and tracking.
-- Extending the model to other marine species and varying environmental contexts.
+- Thanks to the Caltech Fish Counting Dataset creators for making their dataset publicly available.
+- Thanks to Meta AI for the Segment Anything model and codebase.
 
-## Acknowledgements
-Special thanks to dataset curators and Meta AI for their foundational contributions to the Segment Anything framework.
+## Citation
+
+If you find this adaptation useful, please cite the original MedSAM paper:
+
+```bibtex
+@article{MedSAM2024,
+  author = {Jun Ma et al.},
+  title = {Segment Anything in Medical Images},
+  journal = {Nature Communications},
+  volume = {15},
+  pages = {654},
+  year = {2024}
+}
+```
 
