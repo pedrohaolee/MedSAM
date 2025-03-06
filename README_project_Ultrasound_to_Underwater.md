@@ -1,127 +1,87 @@
-# MedSAM
-This is the official repository for MedSAM: Segment Anything in Medical Images.
+# MedSAM for Underwater Sonar Image Segmentation
 
-Welcome to join our [mailing list](https://forms.gle/hk4Efp6uWnhjUHFP6) to get updates.
+## Project Overview
 
+This project adapts the **Medical Segment Anything Model (MedSAM)**—originally designed for medical image segmentation—to the domain of underwater sonar imaging. By leveraging the structural similarities between ultrasound and sonar imaging, such as low signal-to-noise ratios, diffuse boundaries, and complex textures, this project aims to effectively segment sonar images, specifically for fish tracking and ecological monitoring tasks.
 
-## News
+### Objectives
+- Adapt and fine-tune MedSAM for sonar image segmentation tasks.
+- Evaluate segmentation performance using the Caltech Fish Counting Dataset (CFC).
+- Provide quantitative and qualitative analyses comparing MedSAM to baseline models.
 
-- 2024.08.06: Med[SAM2](https://github.com/facebookresearch/segment-anything-2)-Segment Anything in Medical Images and Videos: Benchmark and Deployment [[`Paper`](https://arxiv.org/abs/2408.03322)] [[`Code`](https://github.com/bowang-lab/MedSAM/tree/MedSAM2)] [[Online Demo](https://huggingface.co/spaces/junma/MedSAM2)] [[`Gradio API`](https://github.com/bowang-lab/MedSAM/blob/MedSAM2/app.py)] [[`3D Slicer Plugin`](https://github.com/bowang-lab/MedSAMSlicer/tree/SAM2)] [[Fine-tune SAM2](https://github.com/bowang-lab/MedSAM/tree/MedSAM2?tab=readme-ov-file#fine-tune-sam2-on-the-abdomen-ct-dataset)]
-- 2024.01.15: Welcome to join [CVPR 2024 Challenge: MedSAM on Laptop](https://www.codabench.org/competitions/1847/)
-- 2024.01.15: Release [LiteMedSAM](https://github.com/bowang-lab/MedSAM/blob/LiteMedSAM/README.md) and [3D Slicer Plugin](https://github.com/bowang-lab/MedSAMSlicer), 10x faster than MedSAM! 
+## MedSAM Background
 
+MedSAM is a deep learning segmentation model, trained on a large-scale dataset of 1.6 million medical image-mask pairs across various medical imaging modalities. The model has demonstrated exceptional performance in medical contexts, notably with challenging ultrasound imaging data.
 
-## Installation
-1. Create a virtual environment `conda create -n medsam python=3.10 -y` and activate it `conda activate medsam`
-2. Install [Pytorch 2.0](https://pytorch.org/get-started/locally/)
-3. `git clone https://github.com/bowang-lab/MedSAM`
-4. Enter the MedSAM folder `cd MedSAM` and run `pip install -e .`
+Key components include:
+- **Image Encoder:** Extracts features from the input images.
+- **Prompt Encoder:** Integrates interactive or automated prompts to guide segmentation.
+- **Mask Decoder:** Produces precise segmentation masks from encoded features.
 
+## Dataset
 
-## Get Started
-Download the [model checkpoint](https://drive.google.com/drive/folders/1ETWmi4AiniJeWOt6HAsYgTjYv_fkgzoN?usp=drive_link) and place it at e.g., `work_dir/MedSAM/medsam_vit_b`
+The Caltech Fish Counting Dataset (CFC) was utilized for this project. This dataset includes over 1,500 sonar video clips sourced from five diverse environmental locations:
+- Kenai River, Alaska (KL, KR, KC)
+- Nushagak River, Alaska (NU)
+- Elwha River, Washington (EL)
 
-We provide three ways to quickly test the model on your images
+The data presents multiple challenges such as:
+- Low signal-to-noise ratios.
+- Visually indistinct targets.
+- Complex and variable backgrounds.
 
-1. Command line
+Dataset annotations include over half a million bounding boxes, covering thousands of fish across numerous video frames, enabling detailed performance assessments.
 
+## Implementation
+
+### Setup and Installation
+
+To replicate the environment:
 ```bash
-python MedSAM_Inference.py # segment the demo image
+conda create -n medsam python=3.10 -y
+conda activate medsam
+
+# Install PyTorch
+pip install torch torchvision torchaudio
+
+# Clone MedSAM repository
+git clone https://github.com/bowang-lab/MedSAM
+cd MedSAM
+pip install -e .
 ```
 
-Segment other images with the following flags
-```bash
--i input_img
--o output path
---box bounding box of the segmentation target
-```
+Download and place the pretrained MedSAM model checkpoint in `work_dir/MedSAM/medsam_vit_b`.
 
-2. Jupyter-notebook
+### Adapting MedSAM
+- Sonar images were preprocessed using normalization and augmentation techniques suitable for underwater imagery.
+- The MedSAM model was fine-tuned specifically for sonar-based segmentation tasks using data from the KL subset for training and validation.
 
-We provide a step-by-step tutorial on [CoLab](https://colab.research.google.com/drive/19WNtRMbpsxeqimBlmJwtd1dzpaIvK2FZ?usp=sharing)
+## Evaluation Metrics
+Performance was evaluated using:
+- **Dice Similarity Coefficient (DSC)**: Measures segmentation accuracy.
+- **Mean Absolute Error (MAE)**: Assesses precision in segmentation.
+- Tracking-specific metrics such as MOTA (Multiple Object Tracking Accuracy) and HOTA (Higher-Order Tracking Accuracy).
 
-You can also run it locally with `tutorial_quickstart.ipynb`.
+## Results
 
-3. GUI
+### Quantitative Analysis
+MedSAM demonstrated strong segmentation performance, outperforming traditional baseline methods in handling noisy and diffuse sonar imagery.
 
-Install `PyQt5` with [pip](https://pypi.org/project/PyQt5/): `pip install PyQt5 ` or [conda](https://anaconda.org/anaconda/pyqt): `conda install -c anaconda pyqt`
+### Qualitative Analysis
+Visual comparisons highlighted MedSAM’s robustness in segmenting fish accurately, despite challenging environmental conditions.
 
-```bash
-python gui.py
-```
+## Key Findings
+- MedSAM effectively leverages structural similarities between medical ultrasound and sonar images, demonstrating significant adaptability and robustness.
+- Superior handling of low signal-to-noise ratios and diffuse boundaries compared to baseline methods.
 
-Load the image to the GUI and specify segmentation targets by drawing bounding boxes.
+## Challenges
+- Performance varied with image quality and complexity, particularly with small or stationary fish against highly noisy backgrounds.
+- High noise levels in some dataset subsets impacted segmentation accuracy.
 
-
-
-https://github.com/bowang-lab/MedSAM/assets/19947331/a8d94b4d-0221-4d09-a43a-1251842487ee
-
-
-
-
-
-## Model Training
-
-### Data preprocessing
-
-Download [SAM checkpoint](https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth) and place it at `work_dir/SAM/sam_vit_b_01ec64.pth` .
-
-Download the demo [dataset](https://zenodo.org/record/7860267) and unzip it to `data/FLARE22Train/`.
-
-This dataset contains 50 abdomen CT scans and each scan contains an annotation mask with 13 organs. The names of the organ label are available at [MICCAI FLARE2022](https://flare22.grand-challenge.org/).
-
-Run pre-processing
-
-Install `cc3d`: `pip install connected-components-3d`
-
-```bash
-python pre_CT_MR.py
-```
-
-- split dataset: 80% for training and 20% for testing
-- adjust CT scans to [soft tissue](https://radiopaedia.org/articles/windowing-ct) window level (40) and width (400)
-- max-min normalization
-- resample image size to `1024x1024`
-- save the pre-processed images and labels as `npy` files
-
-
-### Training on multiple GPUs (Recommend)
-
-The model was trained on five A100 nodes and each node has four GPUs (80G) (20 A100 GPUs in total). Please use the slurm script to start the training process.
-
-```bash
-sbatch train_multi_gpus.sh
-```
-
-When the training process is done, please convert the checkpoint to SAM's format for convenient inference.
-
-```bash
-python utils/ckpt_convert.py # Please set the corresponding checkpoint path first
-```
-
-### Training on one GPU
-
-```bash
-python train_one_gpu.py
-```
-
-
+## Future Directions
+- Further optimization for real-time segmentation and tracking.
+- Extending the model to other marine species and varying environmental contexts.
 
 ## Acknowledgements
-- We highly appreciate all the challenge organizers and dataset owners for providing the public dataset to the community.
-- We thank Meta AI for making the source code of [segment anything](https://github.com/facebookresearch/segment-anything) publicly available.
-- We also thank Alexandre Bonnet for sharing this great [blog](https://encord.com/blog/learn-how-to-fine-tune-the-segment-anything-model-sam/)
+Special thanks to dataset curators and Meta AI for their foundational contributions to the Segment Anything framework.
 
-
-## Reference
-
-```
-@article{MedSAM,
-  title={Segment Anything in Medical Images},
-  author={Ma, Jun and He, Yuting and Li, Feifei and Han, Lin and You, Chenyu and Wang, Bo},
-  journal={Nature Communications},
-  volume={15},
-  pages={654},
-  year={2024}
-}
-```
