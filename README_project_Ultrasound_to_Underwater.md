@@ -1,89 +1,92 @@
-# MedSAM for Underwater Sonar Image Segmentation
+# Ultrasound-to-Underwater: Cross-Domain Segmentation with MedSAM
 
-This repository adapts the **MedSAM (Medical Segment Anything Model)** to the domain of underwater sonar imaging, specifically targeting fish segmentation using the Caltech Fish Counting (CFC) dataset.
+This repository explores how **MedSAM (Medical Segment Anything Model)** can be adapted for **underwater sonar imaging**, specifically targeting fish segmentation using the **Caltech Fish Counting (CFC) dataset**. By leveraging the similarities between **ultrasound** and **sonar** images—particularly their noise characteristics and diffused boundaries—this project aims to demonstrate MedSAM’s potential for robust cross-domain generalization.
 
-## Overview
-MedSAM, originally developed for medical image segmentation, is applied here to underwater sonar imagery, leveraging its capabilities in handling challenging imaging conditions such as high noise, diffuse boundaries, and complex textures typical of both ultrasound and sonar data.
+---
 
-## Installation
+## Repository Contents
 
-1. Create and activate a conda environment:
+- **`project_ultrasound_to_underwater.ipynb`**  
+  An interactive Jupyter Notebook that walks through the main pipeline, including data loading, preprocessing, segmentation via MedSAM, and preliminary results analysis.
+
+- **`histogram.py`**  
+  Contains functions to compute and compare **grayscale histograms**. Metrics such as correlation, Chi-Square distance, intersection, and Bhattacharyya distance quantify the similarity between ultrasound and sonar images.
+
+- **`nps.py`**  
+  Provides utilities to compute the **Noise Power Spectrum (NPS)**, a measure of how noise energy is distributed across spatial frequencies. Helpful for examining the parallel noise profiles in ultrasound and sonar data.
+
+- **`speckle.py`**  
+  Implements **speckle noise analysis**, including speckle contrast (standard deviation over mean) and Shannon entropy calculations. These metrics illustrate how sonar images exhibit noise traits akin to ultrasound, guiding potential noise-reduction strategies.
+
+- **`dsa.py`**  
+  Demonstrates a **Digital Subtraction Angiography (DSA)**-inspired approach for sonar imaging. It computes the absolute difference between frames (or images) to highlight dynamic regions—such as moving fish—while reducing background clutter.
+
+---
+
+## Quick Start
+
+1. **Clone** this repository:
    ```bash
-   conda create -n medsam python=3.10 -y
-   conda activate medsam
+   git clone https://github.com/<username>/UltrasoundToUnderwater.git
+   cd UltrasoundToUnderwater
    ```
 
-2. Install PyTorch:
+2. **Install** dependencies (preferably in a virtual environment or conda environment):
    ```bash
-   pip install torch torchvision torchaudio
+   pip install -r requirements.txt
    ```
+   - Make sure you have Python 3.7+ and a suitable version of PyTorch if you plan to integrate with MedSAM.
 
-3. Clone this repository:
+3. **Run the notebook** for a step-by-step demo:
    ```bash
-   git clone https://github.com/bowang-lab/MedSAM
-   cd MedSAM
-   pip install -e .
+   jupyter notebook project_ultrasound_to_underwater.ipynb
    ```
+   This notebook showcases histogram analysis, NPS, speckle noise metrics, and DSA-based subtraction techniques on example ultrasound and sonar images.
 
-## Data Preparation
+4. **Scripts**:
+   - **`histogram.py`**:  
+     ```bash
+     python histogram.py
+     ```
+     Adjust file paths in the script to match your image data.  
+   - **`nps.py`**:  
+     ```bash
+     python nps.py
+     ```
+     Visualizes and compares noise power spectra between images.  
+   - **`speckle.py`**:  
+     ```bash
+     python speckle.py
+     ```
+     Prints out speckle contrast and image entropy.  
+   - **`dsa.py`**:  
+     ```bash
+     python dsa.py
+     ```
+     Displays side-by-side subtraction of sonar frames to isolate moving objects (fish).
 
-This project uses the Caltech Fish Counting Dataset (CFC), which contains sonar video clips annotated for fish detection and tracking. Specifically, data from the Kenai River (KL subset) was used for training and validation, with testing on different subsets (KR, KC, NU, EL) to evaluate model generalization across diverse sonar environments.
+---
 
-- Dataset details: [Caltech Fish Counting Dataset](https://github.com/visipedia/caltech-fish-counting)
+## Project Goals
 
-## Usage
+1. **Cross-Domain Segmentation**: Demonstrate how MedSAM, despite being trained on medical data, can be repurposed for sonar imagery by exploiting parallels with ultrasound.
+2. **Noise Characterization**: Show the resemblance in noise power spectrum and speckle properties between ultrasound and sonar images.
+3. **Enhancement Techniques**: Evaluate DSA-inspired subtraction as a preprocessing step to improve fish segmentation accuracy.
 
-### Model Inference
+---
 
-Use the provided script to run segmentation on your sonar images:
+## Potential Extensions
 
-```bash
-python MedSAM_Inference.py -i input_image.png -o output_path --box x1 y1 x2 y2
-```
+- **Integration with MedSAM**: Further refine prompts and bounding boxes for sonar images to address over-segmentation issues.
+- **Extended Datasets**: Explore additional sonar datasets, or incorporate more diverse ultrasound samples to bolster cross-domain evidence.
+- **Noise Reduction**: Investigate advanced filters or deep-learning-based denoising methods to complement NPS and speckle analyses.
 
-### Interactive Notebooks
+---
 
-A Colab notebook tutorial demonstrating the full pipeline for sonar image segmentation using MedSAM is provided:
+## References
 
-- [Run on Google Colab](https://colab.research.google.com)
+- **MedSAM**  
+  Ma, J., He, Y., Li, F., Han, L., You, C., & Wang, B. (2024). _Segment Anything in Medical Images_. *Nature Communications, 15*(1), 654.
 
-### GUI Application
-
-Run the GUI tool for interactive segmentation:
-
-```bash
-pip install PyQt5
-python gui.py
-```
-
-Load sonar images and draw bounding boxes to segment targets.
-
-## Results
-
-MedSAM shows promising segmentation results in sonar imagery, surpassing baseline methods in both qualitative and quantitative assessments.
-
-## Future Work
-
-- Enhance model robustness and generalization across varied underwater environments.
-- Investigate real-time performance optimization.
-
-## Acknowledgments
-
-- Thanks to the Caltech Fish Counting Dataset creators for making their dataset publicly available.
-- Thanks to Meta AI for the Segment Anything model and codebase.
-
-## Citation
-
-If you find this adaptation useful, please cite the original MedSAM paper:
-
-```bibtex
-@article{MedSAM2024,
-  author = {Jun Ma et al.},
-  title = {Segment Anything in Medical Images},
-  journal = {Nature Communications},
-  volume = {15},
-  pages = {654},
-  year = {2024}
-}
-```
-
+- **Caltech Fish Counting Dataset**  
+  Kay, J., Kulits, P., Stathatos, S., Deng, S., Young, E., Beery, S., ... & Perona, P. (2022). *The Caltech Fish Counting dataset: a benchmark for multiple-object tracking and counting*. In _European Conference on Computer Vision_ (pp. 290-311). Cham: Springer.
