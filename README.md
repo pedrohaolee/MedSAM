@@ -41,14 +41,14 @@ This repository explores how **MedSAM (Medical Segment Anything Model)** can be 
    ```bash
    jupyter notebook project_ultrasound_to_underwater.ipynb
    ```
-   This notebook showcases histogram analysis, NPS, speckle noise metrics, and DSA-based subtraction techniques on example ultrasound and sonar images.
+   This notebook showcases MedSAM segmentation results on example Caltech fish sonar images.
 
 4. **Scripts**:
    - **`histogram.py`**:  
      ```bash
      python histogram.py
      ```
-     Adjust file paths in the script to match your image data.  
+     Analyze histograms and their similarities between images.  
    - **`nps.py`**:  
      ```bash
      python nps.py
@@ -63,7 +63,7 @@ This repository explores how **MedSAM (Medical Segment Anything Model)** can be 
      ```bash
      python dsa.py
      ```
-     Displays side-by-side subtraction of sonar frames to isolate moving objects (fish).
+     Displays side-by-side subtraction of sonar frames to isolate fish objects.
 
 ---
 
