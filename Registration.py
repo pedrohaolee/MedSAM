@@ -1,8 +1,29 @@
+# =============================================================================
+# Image Registration Pipeline
+# 
+# This script implements a deformable image registration system using:
+# - Control point detection via edge/corner features
+# - Local displacement estimation through template matching
+# - Triangular mesh-based warping using affine transforms
+#
+# Main Functions:
+# 1. find_control_points() : Detect feature points in mask image
+# 2. compute_displacements(): Estimate local motion vectors
+# 3. warp_image_triangular(): Deform image using Delaunay triangulation
+# 4. demo_registration()   : Full pipeline demonstration
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Library Imports
+# -----------------------------------------------------------------------------
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.spatial import Delaunay
 
+# =============================================================================
+# Control Point Detection
+# =============================================================================
 def find_control_points(mask, num_points=200, edge_thresh=50):
     """
     1. Detect strong edges in the mask image
@@ -43,6 +64,9 @@ def find_control_points(mask, num_points=200, edge_thresh=50):
     selected = np.array(selected, dtype=np.float32)
     return selected
 
+# =============================================================================
+# Displacement Estimation
+# =============================================================================
 def compute_displacements(mask, target, pts, window=15):
     """
     2. Estimate the local displacement for each control point by
@@ -112,6 +136,9 @@ def compute_displacements(mask, target, pts, window=15):
 
     return np.array(displacements, dtype=np.float32)
 
+# =============================================================================
+# Image Warping
+# =============================================================================
 def warp_image_triangular(image, pts_src, pts_dst, output_shape=None):
     """
     3. Given an image and two corresponding sets of points (same triangulation),
@@ -195,6 +222,9 @@ def warp_image_triangular(image, pts_src, pts_dst, output_shape=None):
 
     return warped
 
+# =============================================================================
+# Demonstration and Visualization
+# =============================================================================
 def demo_registration(mask_path="0.jpg", target_path="10.jpg"):
     """
     Demo function to:
@@ -282,7 +312,9 @@ def demo_registration(mask_path="0.jpg", target_path="10.jpg"):
     plt.axis("off")
     plt.show()
 
-
+# =============================================================================
+# Execution Block
+# =============================================================================
 if __name__ == "__main__":
     # Run the demo with default image names:
     demo_registration("33.jpg", "34.jpg")

@@ -1,5 +1,23 @@
+# =============================================================================
+# Digital Subtraction Angiography (DSA) Visualization
+# 
+# Demonstrates basic image subtraction for motion detection between two frames
+# 
+# Input Requirements:
+# - Two input images (0.jpg and 10.jpg) in working directory
+# - OpenCV and Matplotlib installed
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Core Dependencies
+# -----------------------------------------------------------------------------
+
 import cv2
 import matplotlib.pyplot as plt
+
+# =============================================================================
+# Image Subtraction and Visualization
+# =============================================================================
 
 def display_image_subtraction():
     """
@@ -45,5 +63,8 @@ def display_image_subtraction():
     plt.tight_layout()
     plt.show()
 
+# =============================================================================
+# Execution Entry Point
+# =============================================================================
 if __name__ == "__main__":
     display_image_subtraction()

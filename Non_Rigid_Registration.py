@@ -1,3 +1,18 @@
+# =============================================================================
+# Non-Rigid Image Registration Pipeline
+#
+# Implements a medical image registration system with:
+# - Morphological preprocessing
+# - Hybrid feature detection
+# - Entropy-based displacement estimation
+# - Radial Basis Function warping
+# 
+# Based on Nejati et al.'s method with simplifications
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Core Dependencies
+# -----------------------------------------------------------------------------
 import cv2
 import numpy as np
 from skimage.feature import corner_harris, corner_peaks
@@ -6,9 +21,9 @@ from skimage.filters import rank
 import scipy.interpolate as si
 import matplotlib.pyplot as plt
 
-##############################################################################
-# MORPHOLOGICAL BOTTOM-HAT
-##############################################################################
+# =============================================================================
+# Image Enhancement - Morphological Bottom Hat
+# =============================================================================
 def morphological_bottom_hat(img, selem_radius=15):
     """
     Perform morphological bottom-hat:
@@ -41,9 +56,10 @@ def morphological_bottom_hat(img, selem_radius=15):
     enhanced = np.clip(enhanced, 0, 255).astype(np.uint8)
     return enhanced
 
-##############################################################################
-# HYBRID FEATURE-BASED CONTROL POINT SELECTION (live image)
-##############################################################################
+
+# =============================================================================
+# Hybrid Feature Detection
+# =============================================================================
 def select_control_points_live(live_img, max_points=200, edge_thresh=0.3, min_dist=25):
     """
     1. Compute a simple Sobel gradient magnitude + threshold for edges.
@@ -103,9 +119,9 @@ def select_control_points_live(live_img, max_points=200, edge_thresh=0.3, min_di
     pts = np.array([[s[1], s[0]] for s in selected], dtype=np.float32)
     return pts
 
-##############################################################################
-# ENTROPY-OF-DIFFERENCES SIMILARITY
-##############################################################################
+# =============================================================================
+# Entropy-Based Similarity Metric
+# =============================================================================
 def histogram_entropy(img1_patch, img2_patch):
     """
     Compute the negative of the entropy of (img1_patch - img2_patch),
@@ -118,9 +134,11 @@ def histogram_entropy(img1_patch, img2_patch):
     # Inverse sign => maximize measure
     return -ent
 
-##############################################################################
-# LOCAL DISPLACEMENT ESTIMATION (TEMPLATE MATCHING + MULTI-INIT HILL-CLIMB)
-##############################################################################
+
+# =============================================================================
+# Displacement Estimation with Hill Climbing
+# =============================================================================
+
 def local_displacement(mask, live, pt, window=15, disp_limit=20,
                        init_offsets=[(5,5), (5,-5), (-5,5), (-5,-5)]):
     """
@@ -198,9 +216,9 @@ def local_displacement(mask, live, pt, window=15, disp_limit=20,
 
     return best_global_pair
 
-##############################################################################
-# MULTILEVEL B-SPLINE INTERPOLATION (SIMPLIFIED)
-##############################################################################
+# =============================================================================
+# Displacement Field Interpolation
+# =============================================================================
 def build_displacement_function(pts_src, disp_vals):
     """
     In the original paper, a true multilevel B-spline method is described.
@@ -260,9 +278,9 @@ def warp_mask_image(mask_img, pts, disps, shape):
     )
     return warped
 
-##############################################################################
-# MAIN DEMO
-##############################################################################
+# =============================================================================
+# Demonstration Pipeline
+# =============================================================================
 def demo_nejati_registration(mask_path="mask.jpg", live_path="live.jpg"):
     """
     Demonstration of nonrigid registration using:
