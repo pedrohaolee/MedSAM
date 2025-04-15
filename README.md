@@ -1,4 +1,4 @@
-# Ultrasound-to-Underwater: Cross-Domain Segmentation with MedSAM
+# Cross-Domain Segmentation with MedSAM and DSA for Sonar Fish Tracking
 
 This repository explores how **MedSAM (Medical Segment Anything Model)** can be adapted for **underwater sonar imaging**, specifically targeting fish segmentation using the **Caltech Fish Counting (CFC) dataset**. By leveraging the similarities between **ultrasound** and **sonar** images—particularly their noise characteristics and diffused boundaries—this project aims to demonstrate MedSAM’s potential for robust cross-domain generalization.
 
@@ -19,8 +19,23 @@ This repository explores how **MedSAM (Medical Segment Anything Model)** can be 
   Implements **speckle noise analysis**, including speckle contrast (standard deviation over mean) and Shannon entropy calculations. These metrics illustrate how sonar images exhibit noise traits akin to ultrasound, guiding potential noise-reduction strategies.
 
 - **`dsa.py`**  
-  Demonstrates a **Digital Subtraction Angiography (DSA)**-inspired approach for sonar imaging. It computes the absolute difference between frames (or images) to highlight dynamic regions—such as moving fish—while reducing background clutter.
+  Demonstrates **Digital Subtraction Angiography (DSA)** for motion detection via frame differencing.  
+  *Example:* `python dsa.py` shows baseline, contrast, and subtraction results.
 
+- **`registration.py`**  
+  Implements **deformable image registration** using:  
+  - Control point detection via Canny edges  
+  - Local displacement estimation  
+  - Triangular mesh warping (Delaunay triangulation + affine transforms)  
+  *Usage:* Aligns sequential sonar frames for improved subtraction.
+
+- **`non_rigid_registration.py`**  
+  Advanced registration pipeline featuring:  
+  - Morphological bottom-hat preprocessing  
+  - Hybrid edge/corner control points  
+  - Entropy-based displacement estimation  
+  - RBF-interpolated deformation fields  
+  *Usage:* Handles complex non-rigid motions in underwater scenes.
 ---
 
 ## Quick Start
@@ -90,3 +105,6 @@ This repository explores how **MedSAM (Medical Segment Anything Model)** can be 
 
 - **Caltech Fish Counting Dataset**  
   Kay, J., Kulits, P., Stathatos, S., Deng, S., Young, E., Beery, S., ... & Perona, P. (2022). *The Caltech Fish Counting dataset: a benchmark for multiple-object tracking and counting*. In _European Conference on Computer Vision_ (pp. 290-311). Cham: Springer.
+
+- **Registration Methods**  
+  Nejati, M., Sadri, S., & Amirfattahi, R. (2013). Nonrigid Image Registration in Digital Subtraction Angiography Using Multilevel B-Spline. BioMed Research International.
