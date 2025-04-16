@@ -1,3 +1,14 @@
+# =============================================================================
+# Noise Power Spectrum (NPS) Analysis Tool
+#
+# This script implements standardized methods for computing and comparing
+# Noise Power Spectra in medical/sonar imaging systems, following IEC 62220-1
+# and related standards for noise characterization in digital imaging.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Core Dependencies
+# -----------------------------------------------------------------------------
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
@@ -5,6 +16,10 @@ from numpy.fft import fft2, fftshift
 from scipy.ndimage import gaussian_filter
 from scipy.spatial.distance import cosine
 from scipy.interpolate import interp1d
+
+# =============================================================================
+# Noise Power Spectrum Computation
+# =============================================================================
 
 def compute_nps(image, sigma=5, target_size=(256, 256)):
     """
@@ -52,6 +67,9 @@ def compute_nps(image, sigma=5, target_size=(256, 256)):
     return radial_profile
 
 
+# =============================================================================
+# NPS Comparison Metrics
+# =============================================================================
 def compare_nps(nps_one, nps_two):
     """
     Compare two Noise Power Spectra using similarity metrics.
@@ -91,7 +109,9 @@ def compare_nps(nps_one, nps_two):
         "normalized_l2_norm_difference": normalized_l2_norm_difference
     }
 
-
+# =============================================================================
+# Demonstration and Validation
+# =============================================================================
 if __name__ == "__main__":
 
     # Load grayscale images

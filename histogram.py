@@ -1,9 +1,24 @@
+# =============================================================================
+# Image Histogram Analysis Tool
+#
+# This script implements comprehensive histogram analysis for grayscale images,
+# including similarity quantification and visualization. Designed for medical
+# and sonar image comparison studies.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Core Dependencies
+# -----------------------------------------------------------------------------
+
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
+# =============================================================================
+# Histogram Computation
+# =============================================================================
 def compute_histogram(image, bins=256):
     """
     Compute the normalized histogram of a grayscale image.
@@ -24,7 +39,9 @@ def compute_histogram(image, bins=256):
     hist = hist / hist.sum()  # Normalize histogram
     return hist
 
-
+# =============================================================================
+# Histogram Similarity Metrics
+# =============================================================================
 def compute_histogram_similarity(hist1, hist2):
     """
     Compute various histogram similarity metrics between two histograms.
@@ -54,7 +71,9 @@ def compute_histogram_similarity(hist1, hist2):
     }
     return similarity_scores
 
-
+# =============================================================================
+# Image Preprocessing
+# =============================================================================
 def crop_center(image):
     """
     Crop the center region of an image to one-third of its half-size.
@@ -75,7 +94,9 @@ def crop_center(image):
     return image[center_y - crop_size // 3 : center_y + crop_size // 3,
                  center_x - crop_size // 3 : center_x + crop_size // 3]
 
-
+# =============================================================================
+# Demonstration Pipeline
+# =============================================================================
 if __name__ == "__main__":
 
     # Load images in grayscale
